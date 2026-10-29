@@ -109,6 +109,8 @@ footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--line);font-si
     <div class="progress-num"><span id="pDone">0</span><small> / <span id="pTotal">0</span></small></div>
     <div class="bar"><i id="pBar"></i></div>
     <div class="day-count" style="margin-top:6px">tarefas concluídas</div>
+    <div class="day-count" id="pAtual" style="margin-top:4px"></div>
+    <button class="chip" id="cpChecks" style="margin-top:8px" title="Os seus checks ficam só neste navegador. Copie e mande para o David publicar.">copiar meus checks</button>
   </div>
 </header>
 
@@ -239,7 +241,12 @@ const KEY="handover-david-v1";
 let done={}; try{done=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){done={}}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(done))}catch(e){}};
 let fP="Todos", fO="todas", soPend=false;
-T.forEach((t,i)=>t.id="t"+i);
+// t12 era o PR de saidas-reuniao/auditar-processo (removido em 29/10): pular para não embaralhar os checks já salvos
+T.forEach((t,i)=>t.id="t"+(i<12?i:i+1));
+// status.json (no repo) = feitos confirmados, iguais para todo mundo; o resto é check local de cada navegador
+let shared=new Set();
+const feito=t=>shared.has(t.id)||!!done[t.id];
+fetch("status.json?v="+Date.now()).then(r=>r.ok?r.json():{feitos:[]}).then(j=>{shared=new Set(j.feitos||[]);const a=document.getElementById("pAtual");if(a&&j.atualizado)a.textContent="confirmado em "+j.atualizado;render()}).catch(()=>{});
 
 function chip(group,label,val,cur,on){
   const b=document.createElement("button");b.className="chip";b.textContent=label;
@@ -257,26 +264,26 @@ document.getElementById("fPend").onclick=()=>{soPend=!soPend;render()};
 function visible(t){
   if(fP!=="Todos" && !t.p.includes(fP)) return false;
   if(fO!=="todas" && t.o!==fO) return false;
-  if(soPend && done[t.id]) return false;
+  if(soPend && feito(t)) return false;
   return true;
 }
 function render(){
   renderFilters();
   const main=document.getElementById("days"); main.innerHTML="";
   DIAS.forEach(D=>{
-    const all=T.filter(t=>t.d===D.id), vis=all.filter(visible), dn=all.filter(t=>done[t.id]).length;
+    const all=T.filter(t=>t.d===D.id), vis=all.filter(visible), dn=all.filter(feito).length;
     const s=document.createElement("section");s.className="day";
     s.innerHTML=`<div class="day-head"><div class="day-num">${D.num}</div><div class="day-title">${D.titulo}<small>${D.sub}</small></div><div class="day-count">${dn}/${all.length} feitas</div></div>`;
     if(!vis.length){const e=document.createElement("div");e.className="empty";e.textContent="Nada neste dia com os filtros atuais.";s.appendChild(e);}
     vis.forEach(t=>{
-      const r=document.createElement("label");r.className="task"+(done[t.id]?" done":"");
-      r.innerHTML=`<input type="checkbox" ${done[t.id]?"checked":""} aria-label="${t.t.replace(/"/g,'&quot;')}"><div class="hour">${t.h}</div><div><div class="ttl">${t.t}</div><div class="det">${t.x}</div><div class="meta">${t.c?'<span class="tag crit">crítico</span>':''}<span class="tag ${t.o}">${ORIGEM[t.o]}</span>${t.p.map(p=>`<span class="tag">→ ${p}</span>`).join("")}</div></div>`;
+      const r=document.createElement("label");r.className="task"+(feito(t)?" done":"");
+      r.innerHTML=`<input type="checkbox" ${feito(t)?"checked":""} ${shared.has(t.id)?"disabled":""} aria-label="${t.t.replace(/"/g,'&quot;')}"><div class="hour">${t.h}</div><div><div class="ttl">${t.t}</div><div class="det">${t.x}</div><div class="meta">${shared.has(t.id)?'<span class="tag">✓ confirmado</span>':''}${t.c?'<span class="tag crit">crítico</span>':''}<span class="tag ${t.o}">${ORIGEM[t.o]}</span>${t.p.map(p=>`<span class="tag">→ ${p}</span>`).join("")}</div></div>`;
       r.querySelector("input").onchange=e=>{if(e.target.checked)done[t.id]=1;else delete done[t.id];save();render()};
       s.appendChild(r);
     });
     main.appendChild(s);
   });
-  const n=T.filter(t=>done[t.id]).length;
+  const n=T.filter(feito).length;
   document.getElementById("pDone").textContent=n;document.getElementById("pTotal").textContent=T.length;
   document.getElementById("pBar").style.width=(100*n/T.length)+"%";
   renderPeople();
@@ -291,6 +298,7 @@ function renderPeople(){
     box.appendChild(d);
   });
 }
+document.getElementById("cpChecks").onclick=e=>{const ids=Object.keys(done).filter(k=>done[k]&&!shared.has(k));const txt=JSON.stringify(ids)+"\n"+T.filter(t=>ids.includes(t.id)).map(t=>"- "+t.t).join("\n");navigator.clipboard.writeText(txt).then(()=>{e.target.textContent=ids.length+" copiados"},()=>prompt("Copie:",txt))};
 render();
 </script>
 </body>
