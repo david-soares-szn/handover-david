@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Handover do David</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f3eee4; --card:#fbf8f2; --ink:#1f1c17; --ink2:#5b554b; --line:#d9d0c0;
+  --rust:#a8401a; --rust-soft:#f1dccf; --olive:#5d6b2f; --olive-soft:#e3e7cf;
+  --slate:#3d5a73; --slate-soft:#dbe4ec; --done:#9a9284;
+  --serif:"Fraunces",Georgia,serif; --sans:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#191712; --card:#22201a; --ink:#ece6da; --ink2:#a9a293; --line:#3a362d;
+    --rust:#e07a4f; --rust-soft:#3d261b; --olive:#b5c27a; --olive-soft:#2c3120;
+    --slate:#93b3cc; --slate-soft:#1f2a33; --done:#6c665b;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#191712; --card:#22201a; --ink:#ece6da; --ink2:#a9a293; --line:#3a362d;
+  --rust:#e07a4f; --rust-soft:#3d261b; --olive:#b5c27a; --olive-soft:#2c3120;
+  --slate:#93b3cc; --slate-soft:#1f2a33; --done:#6c665b;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1040px;margin:0 auto;padding:40px 16px 80px}
+header.top{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;border-bottom:2px solid var(--ink);padding-bottom:20px}
+.kicker{font:500 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--rust)}
+h1{font:800 clamp(34px,6vw,58px)/.95 var(--serif);margin:10px 0 10px;letter-spacing:-.02em}
+.lede{color:var(--ink2);max-width:62ch;margin:0}
+.progress-box{text-align:right;min-width:170px}
+.progress-num{font:600 44px/1 var(--serif)}
+.progress-num small{font-size:18px;color:var(--ink2)}
+.bar{height:6px;background:var(--line);margin-top:8px}
+.bar i{display:block;height:100%;background:var(--rust);width:0;transition:width .3s ease-out}
+.legend{display:flex;flex-wrap:wrap;gap:18px;margin:18px 0 0;font-size:13px;color:var(--ink2)}
+.filters{position:sticky;top:0;z-index:5;background:var(--paper);padding:14px 0;margin-top:8px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
+.fgroup{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.fgroup span{font:500 11px var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--ink2);margin-right:4px}
+button.chip{font:500 13px var(--sans);border:1px solid var(--line);background:var(--card);color:var(--ink);padding:5px 12px;border-radius:999px;cursor:pointer}
+button.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.day{margin-top:44px}
+.day-head{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:baseline;border-bottom:1px solid var(--ink);padding-bottom:8px}
+.day-num{font:800 52px/1 var(--serif);letter-spacing:-.03em}
+.day-title{font:600 20px/1.2 var(--serif)}
+.day-title small{display:block;font:400 13px var(--sans);color:var(--ink2);margin-top:3px}
+.day-count{font:500 13px var(--mono);color:var(--ink2)}
+.task{display:grid;grid-template-columns:28px 64px 1fr;gap:6px 14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.task input{width:18px;height:18px;margin:3px 0 0;accent-color:var(--rust);cursor:pointer}
+.hour{font:500 13px/1.6 var(--mono);color:var(--ink2)}
+.ttl{font-weight:600}
+.det{color:var(--ink2);font-size:14px;margin-top:3px}
+.det b{color:var(--ink);font-weight:600}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{font:500 11.5px/1 var(--mono);padding:4px 8px;border-radius:3px;background:var(--slate-soft);color:var(--slate)}
+.tag.ray{background:var(--rust-soft);color:var(--rust)}
+.tag.meu{background:var(--olive-soft);color:var(--olive)}
+.tag.ambos{background:transparent;border:1px solid var(--ink2);color:var(--ink2)}
+.tag.crit{background:var(--rust);color:var(--card)}
+.task.done .ttl,.task.done .det{color:var(--done);text-decoration:line-through;text-decoration-thickness:1px}
+.task.hide{display:none}
+.empty{color:var(--ink2);font-style:italic;padding:14px 0}
+section.block{margin-top:56px}
+h2{font:700 28px/1.1 var(--serif);margin:0 0 4px;letter-spacing:-.01em}
+.sub{color:var(--ink2);margin:0 0 18px}
+.people{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0;border-top:1px solid var(--ink)}
+.person{padding:16px 18px 18px 0;border-bottom:1px solid var(--line)}
+.person h3{font:600 19px var(--serif);margin:0 0 2px}
+.person .role{font:400 12.5px var(--mono);color:var(--ink2)}
+.person ul{margin:10px 0 0;padding-left:18px;font-size:14px}
+.person li{margin:3px 0}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font:500 11px var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--ink2);text-align:left;border-bottom:1px solid var(--ink);padding:8px 10px 8px 0}
+td{border-bottom:1px solid var(--line);padding:10px 10px 10px 0;vertical-align:top}
+td:first-child{font-weight:600}
+.decide li{margin:6px 0}
+footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink2)}
+@media (max-width:640px){
+  header.top{grid-template-columns:1fr}
+  .progress-box{text-align:left}
+  .task{grid-template-columns:24px 1fr}
+  .hour{grid-column:2}
+  .task>div:last-child{grid-column:2}
+  .day-head{grid-template-columns:auto 1fr}
+  .day-count{grid-column:1/-1}
+  table,thead,tbody,tr,td,th{display:block}
+  thead{display:none}
+  td{border:0;padding:2px 0}
+  tr{border-bottom:1px solid var(--line);padding:10px 0}
+}
+@media print{.filters{position:static}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div>
+    <div class="kicker">Passagem de bastão · Backoffice de Franquias</div>
+    <h1>O que o David entrega até 03/11</h1>
+    <p class="lede">Cronograma cruzando o documento da Rayanne (<code>passa-bastao-david-isa</code>), as orientações dela na call de 28/10 e na daily de 29/10, e o que foi levantado na máquina e nas plataformas do David. Prioridade da Ray: <b>1. Danos</b> (a Fabi sai de férias em 03/11 e a Isa assume), <b>2. Score</b>. <b>Prazo dela: tudo pronto até sexta, 30/10, no fim do dia</b>; a terça fica para o handover formal. Cada linha diz o que fazer e para quem vai. O que o documento pede e não é do David está no fim, separado.</p>
+  </div>
+  <div class="progress-box">
+    <div class="progress-num"><span id="pDone">0</span><small> / <span id="pTotal">0</span></small></div>
+    <div class="bar"><i id="pBar"></i></div>
+    <div class="day-count" style="margin-top:6px">tarefas concluídas</div>
+  </div>
+</header>
+
+<div class="legend">
+  <span><span class="tag ray">Ray</span> pedido no doc ou nas reuniões dela</span>
+  <span><span class="tag meu">levantado</span> não está no doc; achado no inventário</span>
+  <span><span class="tag ambos">ambos</span> está no doc e foi confirmado</span>
+  <span><span class="tag crit">crítico</span> trava o resto se não sair</span>
+</div>
+
+<div class="filters" role="toolbar" aria-label="Filtros">
+  <div class="fgroup" id="fPessoa"><span>Para</span></div>
+  <div class="fgroup" id="fOrigem"><span>Origem</span></div>
+  <div class="fgroup"><span>Mostrar</span><button class="chip" id="fPend" aria-pressed="false">só pendentes</button></div>
+</div>
+
+<main id="days"></main>
+
+<section class="block">
+  <h2>O que cada uma recebe</h2>
+  <p class="sub">Resumo das tarefas acima, agrupado por quem recebe.</p>
+  <div class="people" id="people"></div>
+</section>
+
+<section class="block">
+  <h2>Lixo: não passar</h2>
+  <p class="sub">Medido nos logs do Claude Code de 14/09 a 29/10 (45 dias, os mais antigos já foram apagados). "0 usos" = nenhuma chamada da skill nesse período. Skill chamada por dentro de outra (cards e avaliações dentro do fechar-score) não entra na conta, por isso essas duas ficam.</p>
+  <table>
+    <thead><tr><th>Item</th><th>Evidência</th><th>Por que é lixo</th></tr></thead>
+    <tbody>
+      <tr><td>reciclagem-franquias-2</td><td>0 usos · sem edição desde 20/08</td><td>Redundante: você usa a reciclagem-franquias (v1, editada em 19/10), que já está em <code>seazone-tech/david-ferramentas</code></td></tr>
+      <tr><td>melhores-franqueados</td><td>0 usos</td><td>Pontual (premiação). Sobrepõe a <code>operacao:ranking-franquias-notas</code>, que já está no repo</td></tr>
+      <tr><td>conferencia-onboarding-taxa</td><td>0 usos · parada desde 21/09</td><td>Morta</td></tr>
+      <tr><td>plano-semanal</td><td>0 usos</td><td>Morta</td></tr>
+      <tr><td>auditar-ferramentas</td><td>0 usos · a rotina das 10h10 não está agendada</td><td>Morta</td></tr>
+      <tr><td>prospects-franquia</td><td>0 usos · parada desde 21/07</td><td>Morta, e é captação</td></tr>
+      <tr><td>revisao-poligono</td><td>0 usos</td><td>Expansão, não Adm/Fin. Só vai para a Nathalia se ela quiser</td></tr>
+      <tr><td>contestar-airbnb (contestação de avaliações)</td><td>Cópia local de uma skill da Vic</td><td>Não é do David: serviu de base para a contestar-dano-airbnb. A Vic segue com a dela; apagar a cópia local</td></tr>
+      <tr><td>kpis-franquias (cópia local)</td><td>16 usos, a mais usada</td><td>Viva, mas redundante com a kpis-adm-fin-franquias: o PR leva as melhorias e a cópia local é apagada</td></tr>
+      <tr><td>Calculadora v1, resumo de despesas do fim de semana, montador de KPIs</td><td>"desligado" no inventário oficial</td><td>Já morreram; só tirar do inventário</td></tr>
+      <tr><td>Motor auditável do Score</td><td>"quebrado" no inventário oficial</td><td>Lixo, a não ser que a Isa queira consertar</td></tr>
+      <tr><td>Pages: aircover-autofill-entrega-v1, aircover_autofill, melhorias-processo-danos, mockups-danos-ja-pagos, relatorio-juridico-franquias, taxa-limpeza-mao-de-obra, dimensionamento-adm-fin</td><td>Último push entre 22/06 e 11/09</td><td>Propostas e entregas antigas: arquivar, não transferir</td></tr>
+      <tr><td>skill-cobranca-danos-airbnb (Pages)</td><td>Página da skill</td><td>Redundante com a contestar-dano-airbnb do repo; arquivar</td></tr>
+      <tr><td>auditor-score-franquias (repo pessoal)</td><td>Cópia de agosto</td><td>O oficial é o <code>seazone-tech/auditor-score-franquias</code></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="block">
+  <h2>Pedido no doc da Ray, mas não é do David</h2>
+  <p class="sub">Conferido em 28/10. Levar ao kickoff para tirar do cronograma ou achar o dono real.</p>
+  <table>
+    <thead><tr><th>Item do doc</th><th>O que existe</th><th>Proposta</th></tr></thead>
+    <tbody>
+      <tr><td>Crons no Hermes / bot RayAi</td><td>Não há Hermes instalado</td><td>Tirar da seção 02</td></tr>
+      <tr><td>Scripts em <code>~/scripts/</code></td><td>Pasta não existe; scripts ficam em cada projeto, quase todos na org <code>seazone-tech</code></td><td>Tirar; ver apps no D1 15h</td></tr>
+      <tr><td>Sub-agentes no CLAUDE.md e <code>.claude/agents</code></td><td>Nenhum definido</td><td>Tirar</td></tr>
+      <tr><td>Skills de casos pontuais, conciliação de repasse, inadimplência, comissão mensal e recálculo de preço em lote</td><td>Nenhuma skill ou projeto com esses temas</td><td>Achar quem roda hoje (RM/precificação?)</td></tr>
+      <tr><td>Loom de "casos pontuais" e "análise de faturamento"</td><td>Não são processos do David</td><td>Trocar pelos Looms de Score, Stop, taxa e monthly</td></tr>
+      <tr><td><code>wf_concilia_comissao_enxoval_3fontes</code>, <code>wf_monitora_inadimplencia_franqueado</code>, <code>wf_concilia_repasse_franquia</code></td><td>Sem processo ou regra do lado do David</td><td>Reatribuir a quem roda hoje</td></tr>
+      <tr><td>Os 14 workflows da seção 09</td><td>Na daily de 29/10 a Ray trocou por um agente por subárea, construído pelo Vini</td><td>Substituído pelo mapa skill → agente (D2 9h)</td></tr>
+      <tr><td><code>taxa-limpeza-antes</code> "re-enviar da máquina do David"</td><td>Já está na main de <code>seazone-skills/operacao</code></td><td>Só trocar o responsável</td></tr>
+      <tr><td>Pasta destino <code>financeiro/skills/</code></td><td>As skills da área estão em <code>operacao/</code></td><td>Manter; mover troca o nome do plugin e quebra quem usa</td></tr>
+      <tr><td>Workflows "30/10 quinta" e "31/10 sexta"</td><td>30/10 é sexta, 31/10 é sábado, 02/11 é Finados</td><td>Sobras vão para 03/11</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="block">
+  <h2>Decisões em aberto</h2>
+  <ul class="decide">
+    <li><b>Rayanne:</b> lista exata de quem vira admin (na daily: Ray, Isa, Vini, Vic); pasta <code>operacao/</code> × <code>financeiro/</code>; manter ou não os crons da Wiki de governança; quem roda conciliação, inadimplência e comissão.</li>
+    <li><b>Henry:</b> na daily a Ray disse que ele pega "o operacional" a partir de terça. Confirmar se inclui alguma rotina sua.</li>
+    <li><b>Fabi:</b> grava a parte dela do Loom de danos antes de 03/11?</li>
+    <li><b>David:</b> tem routines no claude.ai ou webhooks? Não foi possível conferir.</li>
+  </ul>
+</section>
+
+<footer>
+  Fontes: doc <code>raayeoliveira.github.io/passa-bastao-david-isa</code> (28/10/2026) · transcrições da call Rayanne/David (28/10, 15h42) e da Daily Backoffice Franquias (29/10, 9h01) · <code>~/.claude/skills</code> · <code>seazone-tech/seazone-skills</code> (main) · <code>seazone-tech/inventario-automacoes-backoffice</code> (56 itens) · GitHub <code>david-soares-szn</code> · crontab local · MCPs Olimpo, automações, EKS e catálogo. Detalhe completo em <code>inventario-handover-david-2026-10-29.md</code>. As marcações ficam salvas só neste navegador.
+</footer>
+</div>
+
+<script>
+const PESSOAS = ["Isa","Fabi","Rayanne","Vini","Nathalia","David"];
+const ORIGEM = {ray:"Ray", meu:"levantado", ambos:"ambos"};
+const DIAS = [
+  {id:"d1", num:"29", titulo:"Quinta · D1 do handover", sub:"Danos primeiro, Looms e PRs de skill"},
+  {id:"d2", num:"30", titulo:"Sexta · D2 do handover", sub:"Prazo da Ray: tudo pronto no fim do dia"},
+  {id:"d3", num:"03", titulo:"Terça 03/11 · último dia", sub:"Fabi entra de férias · handover formal · 02/11 é Finados"}
+];
+const T = [
+ // D1
+ {d:"d1",h:"09h",t:"Daily: anúncio e prioridades da Ray",x:"Feito. Prioridades: <b>1. Danos</b> (Fabi de férias a partir de 03/11; Isa assume), <b>2. Score</b>, depois o resto. Admin para todos em todo projeto. Agentes por subárea construídos pelo Vini.",p:["Rayanne"],o:"ray",c:1},
+ {d:"d1",h:"10h",t:"Mandar este cronograma real para a Ray",x:"Ela pediu \"agora\": o que é real, o que está fora e o que ela e a Carol ainda não viram.",p:["Rayanne"],o:"ray",c:1},
+ {d:"d1",h:"10h30",t:"Danos ponta a ponta: conferir o que falta automatizar",x:"Funil do Sapron: <b>revisar-danos-solicitacao</b> → <b>contestar-dano-airbnb</b> (AirCover) → <b>cobrar-dano-newbyte</b> (outras OTAs). Ver onde ainda depende da mão da Fabi e fechar o que der até 30/10.",p:["Isa"],o:"ray",c:1},
+ {d:"d1",h:"11h",t:"Merge do PR #729 (contestar-dano-airbnb) antes das férias da Fabi",x:"Alerta de e-mail por ação, escalada e regras da Fabi. Se ficar aberto, ninguém mergeia em novembro.",p:["Fabi","Isa"],o:"meu",c:1},
+ {d:"d1",h:"11h30",t:"Loom 1 · Danos (com a Fabi)",x:"Rotina diária de danos rodada pela skill, do retrato do dia à cobrança. A Fabi grava a parte dela antes de sair. É a gravação mais importante.",p:["Isa"],o:"ray",c:1},
+ {d:"d1",h:"14h",t:"Loom 2 · fechamento do Score",x:"<b>fechar-score</b> + <b>cards-checkin-checkout</b> + <b>avaliacoes-por-reserva</b>. O fechamento de outubro cai na 1ª semana de novembro.",p:["Isa"],o:"ambos",c:1},
+ {d:"d1",h:"14h30",t:"Loom 3 · kpis-adm-fin-franquias",x:"Lançar os 3 setores até 10h (vai ter bot cobrando). Regras do dono: 529 se pergunta, 466 vem da Newbyte, 463 só comenta variação > 0,30 p.p.",p:["Isa"],o:"ambos",c:1},
+ {d:"d1",h:"15h",t:"Loom 4 · App Stop de Crescimento",x:"Rodada diária, perguntas às franquias, sugestões de stop por manutenção na fila da gerência, reunião mensal.",p:["Isa"],o:"meu"},
+ {d:"d1",h:"15h30",t:"PR · kpis-adm-fin-franquias com as melhorias de 19 a 27/10",x:"Levar 529, Newbyte 466, reconstrução 482–484 e testes. Responsável → Isa. Depois do merge, apagar <code>~/.claude/skills/kpis-franquias</code>.",p:["Isa"],o:"meu",c:1},
+ {d:"d1",h:"16h",t:"PR · fechar-score + cards-checkin-checkout + avaliacoes-por-reserva",x:"Responsável → Isa.",p:["Isa"],o:"ambos",c:1},
+ {d:"d1",h:"16h30",t:"PR · monthly-franquias renomeada para monthly-franquias-adm-fin",x:"Trocar o nome (pasta, <code>name:</code> e gatilhos). Responsável → Isa. A monthly de outubro sai no início de novembro.",p:["Isa"],o:"meu"},
+ {d:"d1",h:"17h",t:"PR · taxa-limpeza",x:"Responsável → Isa. Ela decide se mantém junto com a <b>analise-taxa-limpeza</b> dela.",p:["Isa"],o:"ambos"},
+ {d:"d1",h:"17h",t:"PR · saidas-reuniao e auditar-processo",x:"A Isa assume a coordenação: as duas vão para ela. Tirar o que é só seu (a auditoria hoje sorteia casos da Fabi e da Isa).",p:["Isa"],o:"meu"},
+ {d:"d1",h:"17h30",t:"Trocar o responsável em taxa-limpeza-antes e comparacao-taxas-divergentes",x:"Já estão na main; só o campo Responsável → Isa.",p:["Isa"],o:"ambos"},
+ // D2
+ {d:"d2",h:"09h",t:"Mapa skill → agente por subárea, para o Vini",x:"Despesas, contratual (distrato), Score (auditoria até publicação, Stop, reciclagem, comunicação) e taxa de limpeza. Para cada um: quais skills entram, fonte de dados, o que é manual hoje. Se for muita coisa, a Vic entra; a Isa não constrói.",p:["Vini","Rayanne"],o:"ray",c:1},
+ {d:"d2",h:"09h30",t:"Revisar os PRs com a Rayanne e fazer o merge",x:"Ela aprova e faz o merge no <code>seazone-skills</code>.",p:["Rayanne"],o:"ambos",c:1},
+ {d:"d2",h:"10h",t:"Admin para todos em tudo o que é seu",x:"Ray, Isa, Vini e Vic (lista da daily; confirmar). Coolify e Supabase (Stop, ScorePulse), Lovable, repos da <code>seazone-tech</code>, Olimpo, catálogo. A Isa com chave própria no kpi-system com escrita.",p:["Rayanne","Isa","Vini"],o:"ray",c:1},
+ {d:"d2",h:"10h30",t:"Stop de Crescimento e ScorePulse → Isa",x:"Produto no catálogo, deploy no Coolify, admin do repo <code>stop-crescimento</code>; ScorePulse no Lovable e no Supabase. Rotacionar o <code>RODADA_TOKEN</code>.",p:["Isa"],o:"meu",c:1},
+ {d:"d2",h:"11h",t:"Calculadora de taxa 2026: PO → Isa",x:"App no EKS; Weslley segue como dev. Tirar o seu nome da Action <code>semente-lavanderias</code>.",p:["Isa"],o:"meu"},
+ {d:"d2",h:"11h",t:"Captação → Nathalia",x:"Owner da Lambda <code>padroniza-nome-lead-franquias</code> e tirar seu acesso de <code>cadencia-franquias</code> e <code>sonar-captacao-franquias</code> no EKS.",p:["Nathalia"],o:"meu"},
+ {d:"d2",h:"11h30",t:"GitHub Pages: transferir 3, arquivar 8",x:"Transferir para a org: arquitetura-backoffice-franquias, revisao-score-franquias, regras-condominio-anuncios. O resto vai para o arquivo (ver Lixo).",p:["Rayanne"],o:"ambos"},
+ {d:"d2",h:"14h",t:"Dry-run de danos: Isa roda o dia com você assistindo",x:"Do retrato do dia à abertura no AirCover e à cobrança na Newbyte. Anotar onde ela travar.",p:["Isa"],o:"ray",c:1},
+ {d:"d2",h:"15h30",t:"Dry-run de KPIs: Isa lança os 3 setores",x:"Já na versão do merge, como vai ser até 10h a partir de terça.",p:["Isa"],o:"ambos",c:1},
+ {d:"d2",h:"16h30",t:"runbook-adm-fin.md",x:"Danos primeiro (prazos D+13/14, quando escalar), depois Score, KPIs (regras do dono), Stop (regra da Ray de 13/10) e taxa de limpeza. Lista do que pode morrer.",p:["Isa","Rayanne"],o:"ambos",c:1},
+ {d:"d2",h:"17h30",t:"Lista do cemitério",x:"Tudo da seção <b>Lixo</b> + skills pessoais + coletor de uso de IA + crons da Wiki de governança (se a Ray não quiser manter).",p:["Rayanne"],o:"ambos"},
+ // D3
+ {d:"d3",h:"09h",t:"Danos no primeiro dia sem a Fabi",x:"Isa roda sozinha; você fica de apoio. Se travar, ajustar a skill no mesmo dia.",p:["Isa"],o:"ray",c:1},
+ {d:"d3",h:"10h",t:"KPIs lançados pela Isa até 10h",x:"Conferir com o <b>auditar.py</b> que os 3 setores entraram certos.",p:["Isa"],o:"ray",c:1},
+ {d:"d3",h:"11h",t:"Handover formal de skills e agentes",x:"Pedido da Ray para terça: passar tudo que já foi ajustado para a Isa, com o Vini junto.",p:["Isa","Rayanne","Vini"],o:"ray",c:1},
+ {d:"d3",h:"14h",t:"Desligar o crontab local",x:"atualizar-wiki, revisar-sync e coletor de uso de IA.",p:["David"],o:"meu"},
+ {d:"d3",h:"16h",t:"Revogar as suas chaves e conexões",x:"<code>KPI_API_KEY</code>, <code>SEAZONE_HUB_AUTH</code>, <code>VISTORIA_PRO_API_KEY</code>, <code>TEAMZONE_MCP_TOKEN</code>; desconectar Slack e Google no Composio. Só depois que a Isa tiver as dela.",p:["David"],o:"ambos",c:1},
+ {d:"d3",h:"17h",t:"Arquivar os repos pessoais claude-config e auditor-score-franquias",x:"Depois que todos os PRs estiverem no ar.",p:["David"],o:"meu"}
+];
+
+const KEY="handover-david-v1";
+let done={}; try{done=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){done={}}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(done))}catch(e){}};
+let fP="Todos", fO="todas", soPend=false;
+T.forEach((t,i)=>t.id="t"+i);
+
+function chip(group,label,val,cur,on){
+  const b=document.createElement("button");b.className="chip";b.textContent=label;
+  b.setAttribute("aria-pressed",val===cur);b.onclick=()=>on(val);group.appendChild(b);
+}
+function renderFilters(){
+  const gp=document.getElementById("fPessoa"), go=document.getElementById("fOrigem");
+  gp.querySelectorAll("button").forEach(b=>b.remove()); go.querySelectorAll("button").forEach(b=>b.remove());
+  ["Todos",...PESSOAS].forEach(p=>chip(gp,p,p,fP,v=>{fP=v;render()}));
+  [["todas","todas"],["ray","Ray"],["meu","levantado"],["ambos","ambos"]].forEach(([v,l])=>chip(go,l,v,fO,x=>{fO=x;render()}));
+  const bp=document.getElementById("fPend");bp.setAttribute("aria-pressed",soPend);
+}
+document.getElementById("fPend").onclick=()=>{soPend=!soPend;render()};
+
+function visible(t){
+  if(fP!=="Todos" && !t.p.includes(fP)) return false;
+  if(fO!=="todas" && t.o!==fO) return false;
+  if(soPend && done[t.id]) return false;
+  return true;
+}
+function render(){
+  renderFilters();
+  const main=document.getElementById("days"); main.innerHTML="";
+  DIAS.forEach(D=>{
+    const all=T.filter(t=>t.d===D.id), vis=all.filter(visible), dn=all.filter(t=>done[t.id]).length;
+    const s=document.createElement("section");s.className="day";
+    s.innerHTML=`<div class="day-head"><div class="day-num">${D.num}</div><div class="day-title">${D.titulo}<small>${D.sub}</small></div><div class="day-count">${dn}/${all.length} feitas</div></div>`;
+    if(!vis.length){const e=document.createElement("div");e.className="empty";e.textContent="Nada neste dia com os filtros atuais.";s.appendChild(e);}
+    vis.forEach(t=>{
+      const r=document.createElement("label");r.className="task"+(done[t.id]?" done":"");
+      r.innerHTML=`<input type="checkbox" ${done[t.id]?"checked":""} aria-label="${t.t.replace(/"/g,'&quot;')}"><div class="hour">${t.h}</div><div><div class="ttl">${t.t}</div><div class="det">${t.x}</div><div class="meta">${t.c?'<span class="tag crit">crítico</span>':''}<span class="tag ${t.o}">${ORIGEM[t.o]}</span>${t.p.map(p=>`<span class="tag">→ ${p}</span>`).join("")}</div></div>`;
+      r.querySelector("input").onchange=e=>{if(e.target.checked)done[t.id]=1;else delete done[t.id];save();render()};
+      s.appendChild(r);
+    });
+    main.appendChild(s);
+  });
+  const n=T.filter(t=>done[t.id]).length;
+  document.getElementById("pDone").textContent=n;document.getElementById("pTotal").textContent=T.length;
+  document.getElementById("pBar").style.width=(100*n/T.length)+"%";
+  renderPeople();
+}
+function renderPeople(){
+  const box=document.getElementById("people");box.innerHTML="";
+  const roles={Isa:"sobe para coordenação · Adm/Fin, Danos, Score e Stop",Fabi:"Danos · de férias a partir de 03/11",Rayanne:"gestora · decide e revisa",Vini:"constrói os agentes por subárea",Nathalia:"Comercial de Franquias · captação",David:"fechar a própria conta"};
+  PESSOAS.forEach(p=>{
+    const its=T.filter(t=>t.p.includes(p));
+    const d=document.createElement("div");d.className="person";
+    d.innerHTML=`<h3>${p} <span class="role">· ${its.length} itens</span></h3><div class="role">${roles[p]}</div><ul>${its.map(t=>`<li>${t.t}</li>`).join("")}</ul>`;
+    box.appendChild(d);
+  });
+}
+render();
+</script>
+</body>
+</html>
