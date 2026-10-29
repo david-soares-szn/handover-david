@@ -145,7 +145,7 @@ footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--line);font-si
       <tr><td>plano-semanal</td><td>0 usos</td><td>Morta</td></tr>
       <tr><td>auditar-ferramentas</td><td>0 usos · a rotina das 10h10 não está agendada</td><td>Morta</td></tr>
       <tr><td>prospects-franquia</td><td>0 usos · parada desde 21/07</td><td>Morta, e é captação</td></tr>
-      <tr><td>revisao-poligono</td><td>0 usos</td><td>Expansão, não Adm/Fin. Só vai para a Nathalia se ela quiser</td></tr>
+      <tr><td>revisao-poligono</td><td>0 usos</td><td>Expansão, não Adm/Fin</td></tr>
       <tr><td>contestar-airbnb (contestação de avaliações)</td><td>Cópia local de uma skill da Vic</td><td>Não é do David: serviu de base para a contestar-dano-airbnb. A Vic segue com a dela; apagar a cópia local</td></tr>
       <tr><td>kpis-franquias (cópia local)</td><td>16 usos, a mais usada</td><td>Viva, mas redundante com a kpis-adm-fin-franquias: o PR leva as melhorias e a cópia local é apagada</td></tr>
       <tr><td>Calculadora v1, resumo de despesas do fim de semana, montador de KPIs</td><td>"desligado" no inventário oficial</td><td>Já morreram; só tirar do inventário</td></tr>
@@ -193,7 +193,7 @@ footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--line);font-si
 </div>
 
 <script>
-const PESSOAS = ["Isa","Fabi","Rayanne","Vini","Nathalia","David"];
+const PESSOAS = ["Isa","Fabi","Rayanne","Vini","David"];
 const ORIGEM = {ray:"Ray", meu:"levantado", ambos:"ambos"};
 const DIAS = [
   {id:"d1", num:"29", titulo:"Quinta · D1 do handover", sub:"Danos primeiro, Looms e PRs de skill"},
@@ -222,7 +222,6 @@ const T = [
  {d:"d2",h:"10h",t:"Admin para todos em tudo o que é seu",x:"Ray, Isa, Vini e Vic (lista da daily; confirmar). Coolify e Supabase (Stop, ScorePulse), Lovable, repos da <code>seazone-tech</code>, Olimpo, catálogo. A Isa com chave própria no kpi-system com escrita.",p:["Rayanne","Isa","Vini"],o:"ray",c:1},
  {d:"d2",h:"10h30",t:"Stop de Crescimento e ScorePulse → Isa",x:"Produto no catálogo, deploy no Coolify, admin do repo <code>stop-crescimento</code>; ScorePulse no Lovable e no Supabase. Rotacionar o <code>RODADA_TOKEN</code>.",p:["Isa"],o:"meu",c:1},
  {d:"d2",h:"11h",t:"Calculadora de taxa 2026: PO → Isa",x:"App no EKS; Weslley segue como dev. Tirar o seu nome da Action <code>semente-lavanderias</code>.",p:["Isa"],o:"meu"},
- {d:"d2",h:"11h",t:"Captação → Nathalia",x:"Owner da Lambda <code>padroniza-nome-lead-franquias</code> e tirar seu acesso de <code>cadencia-franquias</code> e <code>sonar-captacao-franquias</code> no EKS.",p:["Nathalia"],o:"meu"},
  {d:"d2",h:"11h30",t:"GitHub Pages: transferir 3, arquivar 8",x:"Transferir para a org: arquitetura-backoffice-franquias, revisao-score-franquias, regras-condominio-anuncios. O resto vai para o arquivo (ver Lixo).",p:["Rayanne"],o:"ambos"},
  {d:"d2",h:"14h",t:"Dry-run de danos: Isa roda o dia com você assistindo",x:"Do retrato do dia à abertura no AirCover e à cobrança na Newbyte. Anotar onde ela travar.",p:["Isa"],o:"ray",c:1},
  {d:"d2",h:"15h30",t:"Dry-run de KPIs: Isa lança os 3 setores",x:"Já na versão do merge, como vai ser até 10h a partir de terça.",p:["Isa"],o:"ambos",c:1},
@@ -285,7 +284,7 @@ function render(){
 }
 function renderPeople(){
   const box=document.getElementById("people");box.innerHTML="";
-  const roles={Isa:"sobe para coordenação · Adm/Fin, Danos, Score e Stop",Fabi:"Danos · de férias a partir de 03/11",Rayanne:"gestora · decide e revisa",Vini:"constrói os agentes por subárea",Nathalia:"Comercial de Franquias · captação",David:"fechar a própria conta"};
+  const roles={Isa:"sobe para coordenação · Adm/Fin, Danos, Score e Stop",Fabi:"Danos · de férias a partir de 03/11",Rayanne:"gestora · decide e revisa",Vini:"constrói os agentes por subárea",David:"fechar a própria conta"};
   PESSOAS.forEach(p=>{
     const its=T.filter(t=>t.p.includes(p));
     const d=document.createElement("div");d.className="person";
